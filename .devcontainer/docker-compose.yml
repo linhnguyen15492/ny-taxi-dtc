@@ -1,0 +1,11 @@
+services:
+  vm:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow:/root/airflow
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    env_file:
+      - .env
