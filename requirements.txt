@@ -6,3 +6,7 @@ numpy
 pyspark
 pymongo
 python-dotenv
+duckdb
+pyarrow
+tqdm
+google-cloud-storage

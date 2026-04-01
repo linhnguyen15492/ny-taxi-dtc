@@ -5,12 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "duckdb>=1.5.1",
+    "google-cloud-storage>=3.10.1",
     "numpy>=2.4.2",
     "pandas>=3.0.1",
     "psycopg2-binary>=2.9.11",
+    "pyarrow>=23.0.1",
     "pymongo>=4.16.0",
     "pyspark>=4.1.1",
     "python-dotenv>=1.2.2",
     "requests>=2.32.5",
     "sqlalchemy>=2.0.48",
+    "tqdm>=4.67.3",
 ]
