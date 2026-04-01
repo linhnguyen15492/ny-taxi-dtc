@@ -3,9 +3,11 @@ services:
     build: .
     ports:
       - "8080:8080"
+    environment:
+      - AIRFLOW_HOME=/root/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - ./airflow:/root/airflow
-    environment:
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - ../src:/root/airflow/src
     env_file:
       - .env

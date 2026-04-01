@@ -7,11 +7,10 @@ import sqlalchemy
 from utils import postgres_db
 from google.cloud import storage
 
-
-type = "yellow"
+color = "yellow"
 year = "2025"
 month = "05"
-URL = f"https://d37ci6vzurychx.cloudfront.net/trip-data/{type}_tripdata_{year}-{month}.parquet"
+URL = f"https://d37ci6vzurychx.cloudfront.net/trip-data/{color}_tripdata_{year}-{month}.parquet"
 
 
 def read_data_parquet(url: str) -> pd.DataFrame:
@@ -21,11 +20,11 @@ def read_data_parquet(url: str) -> pd.DataFrame:
 def data_generator(data: pd.DataFrame, chunk_size: int = 100000):
     length = len(data)
     for i in range(0, length, chunk_size):
-        yield data[i : i + chunk_size]
+        yield data[i: i + chunk_size]
 
 
 def ingest_data_to_postgres(
-    engine: sqlalchemy.Engine, table_name: str, data: pd.DataFrame
+        engine: sqlalchemy.Engine, table_name: str, data: pd.DataFrame
 ) -> bool:
     """
     Ingest data from the web.
@@ -45,11 +44,11 @@ def ingest_data_to_postgres(
 
 
 def ingest_tracking(
-    conn: psycopg2.extensions.connection,
-    source_name: str,
-    num_rows: int,
-    start_time: datetime,
-    end_time: datetime,
+        conn: psycopg2.extensions.connection,
+        source_name: str,
+        num_rows: int,
+        start_time: datetime,
+        end_time: datetime,
 ):
     sql_script = """
                 INSERT INTO ingest_tracking (source_name, num_rows, start_time, end_time)
