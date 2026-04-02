@@ -7,11 +7,6 @@ import sqlalchemy
 from utils import postgres_db
 from google.cloud import storage
 
-color = "yellow"
-year = "2025"
-month = "05"
-URL = f"https://d37ci6vzurychx.cloudfront.net/trip-data/{color}_tripdata_{year}-{month}.parquet"
-
 
 def read_data_parquet(url: str) -> pd.DataFrame:
     return pd.read_parquet(url)
@@ -20,14 +15,14 @@ def read_data_parquet(url: str) -> pd.DataFrame:
 def data_generator(data: pd.DataFrame, chunk_size: int = 100000):
     length = len(data)
     for i in range(0, length, chunk_size):
-        yield data[i: i + chunk_size]
+        yield data[i : i + chunk_size]
 
 
 def ingest_data_to_postgres(
-        engine: sqlalchemy.Engine, table_name: str, data: pd.DataFrame
+    engine: sqlalchemy.Engine, table_name: str, data: pd.DataFrame
 ) -> bool:
     """
-    Ingest data from the web.
+    Ingest data to local PostgreSQL database using SQLAlchemy engine.
     """
     try:
         data.to_sql(
@@ -44,11 +39,11 @@ def ingest_data_to_postgres(
 
 
 def ingest_tracking(
-        conn: psycopg2.extensions.connection,
-        source_name: str,
-        num_rows: int,
-        start_time: datetime,
-        end_time: datetime,
+    conn: psycopg2.extensions.connection,
+    source_name: str,
+    num_rows: int,
+    start_time: datetime,
+    end_time: datetime,
 ):
     sql_script = """
                 INSERT INTO ingest_tracking (source_name, num_rows, start_time, end_time)
@@ -86,6 +81,13 @@ def upload_to_gcs(bucket_name: str, file_path: str, destination_blob_name: str) 
 
 
 def main():
+    # declare variables
+    color = "yellow"
+    year = "2025"
+    month = "05"
+    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/{color}_tripdata_{year}-{month}.parquet"
+
+    # create database connection and engine
     conn = postgres_db.get_connection()
     engine = sqlalchemy.create_engine(postgres_db.get_connection_string())
 
@@ -93,8 +95,8 @@ def main():
     if conn is None:
         sys.exit("Failed to connect to PostgreSQL database. Exiting.")
 
-    # continue with data ingestion
-    df = read_data_parquet(URL)
+    # if ok continue with data ingestion
+    df = read_data_parquet(url)
     nrows = 0
     try:
         start_time = datetime.now()
@@ -104,11 +106,12 @@ def main():
             )
             nrows += len(chunk)
         end_time = datetime.now()
-        ingest_tracking(conn, URL, nrows, start_time, end_time)
+        ingest_tracking(conn, url, nrows, start_time, end_time)
         print(f"Total rows processed: {nrows} in {end_time - start_time}")
 
     except Exception as e:
         print(f"Error occurred during data ingestion: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
