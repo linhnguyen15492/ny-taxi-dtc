@@ -3,10 +3,10 @@ name = "ny-taxi-dtc"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
+    "apache-airflow>=3.3.0",
     "duckdb>=1.5.1",
-    "google-cloud-storage>=3.10.1",
     "numpy>=2.4.2",
     "pandas>=3.0.1",
     "psycopg2-binary>=2.9.11",
